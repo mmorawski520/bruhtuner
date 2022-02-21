@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#292d2c">
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigationView"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="#1D201F "
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <ImageButton
+                android:id="@+id/collapseTuningDialogBtn"
+                android:layout_width="1dp"
+                android:layout_height="48dp"
+                android:layout_gravity="start|left"
+                android:layout_weight="1"
+                android:background="#1D201F"
+                android:backgroundTint="#1D201F"
+                android:foregroundGravity="left"
+                android:maxWidth="48dp"
+                android:padding="8dp"
+                android:rotationY="-180"
+                android:scaleType="fitCenter"
+                android:src="@drawable/angle_right"
+                tools:ignore="SpeakableTextPresentCheck"
+                tools:src="@drawable/angle_right" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Spinner
+                android:id="@+id/instrumentSpinner"
+                android:layout_width="210dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:dropDownSelector="@color/white"
+                android:popupBackground="#414846"
+                tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck">
+
+
+            </Spinner>
+
+
+        </LinearLayout>
+
+    </com.google.android.material.navigation.NavigationView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/navigationView"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="79dp" />
+
+</RelativeLayout>

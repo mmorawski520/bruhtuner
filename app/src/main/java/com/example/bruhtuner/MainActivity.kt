@@ -1,8 +1,10 @@
 package com.example.bruhtuner
 
 
+import android.Manifest
 import android.app.Dialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import androidx.appcompat.app.AppCompatActivity
@@ -12,9 +14,15 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import androidx.core.app.ActivityCompat
 
+const val  REQUEST_CODE = 200
 
 class MainActivity : AppCompatActivity() {
+
+    var permissions = arrayOf(Manifest.permission.RECORD_AUDIO)
+    var permissionGranted = false
+
     var width: Float = 0f;
     lateinit var bitmap: Bitmap
     lateinit var whitePaint: Paint
@@ -24,7 +32,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        permissionGranted = ActivityCompat.checkSelfPermission(this,permissions[0]) == PackageManager.PERMISSION_GRANTED
 
+        if(!permissionGranted)
+            ActivityCompat.requestPermissions(this,permissions, REQUEST_CODE)
+        //
 
         val expandTuningDialogBtn = findViewById<ImageButton>(R.id.expandTuningDialogBtn)
         val imageView = findViewById<ImageView>(R.id.imageView)
@@ -130,5 +142,14 @@ class MainActivity : AppCompatActivity() {
         refreshStringCanvas()
         frequencyCanvasLine.drawLine(1700f, (width / 2)+700, 1590f, (width / 2) + 825, redPaint)
         frequencyCanvasLine.drawLine(1590f, (width / 2) + 830, 1590f, (width / 2) + 2500, redPaint)
+    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(requestCode == REQUEST_CODE)
+            permissionGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED
     }
 }

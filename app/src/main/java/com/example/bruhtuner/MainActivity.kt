@@ -11,9 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.ImageView
+import android.widget.*
 import androidx.core.app.ActivityCompat
 
 const val  REQUEST_CODE = 200
@@ -21,8 +19,9 @@ const val  REQUEST_CODE = 200
 class MainActivity : AppCompatActivity() {
 
     var permissions = arrayOf(Manifest.permission.RECORD_AUDIO)
-    var permissionGranted = false
-
+    var permissionGranted:Boolean = false
+    var isAutoTuning:Boolean = false
+    var selectedString: Int = 0
     var width: Float = 0f;
     lateinit var bitmap: Bitmap
     lateinit var whitePaint: Paint
@@ -38,9 +37,20 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this,permissions, REQUEST_CODE)
         //
 
+        val autoTuningSwitch = findViewById<Switch>(R.id.switch2)
         val expandTuningDialogBtn = findViewById<ImageButton>(R.id.expandTuningDialogBtn)
         val imageView = findViewById<ImageView>(R.id.imageView)
         val displayMetrics = DisplayMetrics()
+
+        val stringRadioBoxes = arrayOfNulls<RadioButton>(6)
+        stringRadioBoxes[0] = findViewById(R.id.radioButtonFirstString)
+        stringRadioBoxes[1] = findViewById(R.id.radioButtonSecondString)
+        stringRadioBoxes[2] = findViewById(R.id.radioButtonThirdString)
+        stringRadioBoxes[3] = findViewById(R.id.radioButtonFourthString)
+        stringRadioBoxes[4] = findViewById(R.id.radioButtonFifthString)
+        stringRadioBoxes[5] = findViewById(R.id.radioButtonSixthString)
+
+
         windowManager.defaultDisplay.getMetrics(displayMetrics)
 
         width = 1000f
@@ -49,14 +59,30 @@ class MainActivity : AppCompatActivity() {
         initializeColors()
         initializeFrequencyCanvasLine()
         refreshStringCanvas()
-        selectEString()
+
         imageView.background = BitmapDrawable(getResources(), bitmap)
 
      expandTuningDialogBtn.setOnClickListener{
          val intent = Intent(this, TuningActivity::class.java)
          startActivity(intent)
         }
+        autoTuningSwitch.setOnClickListener{
+            isAutoTuning=autoTuningSwitch.isChecked()
+            if(isAutoTuning==true)
+                Toast.makeText(this, "Autotuning is ON", Toast.LENGTH_SHORT).show()
+                else
+                Toast.makeText(this, "Autotuning is OFF", Toast.LENGTH_SHORT).show()
+        }
+        for (i in 0..5) {
+            stringRadioBoxes[i]?.setOnClickListener(View.OnClickListener {
+                for (j in 0..5) {
+                    stringRadioBoxes[j]?.isChecked = false
 
+                }
+                stringRadioBoxes[i]!!.isChecked = true
+                selectedString=i
+            })
+        }
     }
     private fun initializeColors(){
         whitePaint = Paint()

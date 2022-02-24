@@ -7,18 +7,29 @@
     android:layout_height="match_parent"
     android:background="#292d2c"
     tools:context=".MainActivity">
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="400dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias=".19"
+        app:layout_constraintVertical_bias="0.193"
         tools:srcCompat="@tools:sample/avatars" />
+    <ImageView
+        android:id="@+id/imageViewFrequencyPointer"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.102" />
+
+
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
@@ -44,7 +55,8 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/angle_right"
                 tools:ignore="SpeakableTextPresentCheck"
-                tools:src="@drawable/angle_right" />
+                tools:src="@drawable/angle_right"
+                />
 
             <Space
                 android:layout_width="wrap_content"
@@ -56,6 +68,7 @@
                 android:id="@+id/switch2"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:checked="true"
                 android:text="auto tuning"
                 android:textColor="@color/white" />
         </LinearLayout>
@@ -67,6 +80,8 @@
         android:layout_width="50dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
+        android:enabled="false"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.002"
@@ -79,6 +94,8 @@
         android:layout_width="50dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
+        android:enabled="false"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.002"
@@ -89,7 +106,9 @@
         android:id="@+id/radioButtonThirdString"
         android:layout_width="50dp"
         android:layout_height="48dp"
+        android:enabled="false"
         android:layout_marginStart="16dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.002"
@@ -101,7 +120,9 @@
         android:id="@+id/radioButtonFourthString"
         android:layout_width="50dp"
         android:layout_height="48dp"
+        android:enabled="false"
         android:layout_marginStart="16dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.998"
@@ -113,7 +134,9 @@
         android:id="@+id/radioButtonFifthString"
         android:layout_width="50dp"
         android:layout_height="48dp"
+        android:enabled="false"
         android:layout_marginStart="16dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.998"
@@ -126,6 +149,8 @@
         android:layout_width="50dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
+        android:visibility="invisible"
+        android:enabled="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.998"
@@ -148,5 +173,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.911" />
+
+    <TextView
+        android:id="@+id/textViewTuningHelper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFCFC"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.695" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,19 +20,17 @@
             <ImageButton
                 android:id="@+id/collapseTuningDialogBtn"
                 android:layout_width="1dp"
-                android:layout_height="48dp"
-                android:layout_gravity="start|left"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#1D201F"
                 android:backgroundTint="#1D201F"
-                android:foregroundGravity="left"
-                android:maxWidth="48dp"
                 android:padding="8dp"
-                android:rotationY="-180"
                 android:scaleType="fitCenter"
                 android:src="@drawable/angle_right"
                 tools:ignore="SpeakableTextPresentCheck"
-                tools:src="@drawable/angle_right" />
+                tools:src="@drawable/angle_right"
+                android:rotationY="-180"
+                />
 
             <Space
                 android:layout_width="wrap_content"
@@ -41,7 +39,7 @@
 
             <Spinner
                 android:id="@+id/instrumentSpinner"
-                android:layout_width="210dp"
+                android:layout_width="250dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
@@ -58,11 +56,14 @@
     </com.google.android.material.navigation.NavigationView>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/navigationView"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="79dp" />
+        android:layout_marginBottom="79dp"
+        android:foregroundGravity="center_vertical|center|center_horizontal"
+        tools:listitem="@layout/recycler_view_item" />
 
 </RelativeLayout>

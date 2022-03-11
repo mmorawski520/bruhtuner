@@ -6,11 +6,17 @@ import android.media.AudioRecord
 import android.media.MediaRecorder
 
 class MicSignal {
-
-    val isAutotuning = false
-    val selectedInstrument: String = ""
     //it'll be useful in the future
-    val selectedTuningMode: String = ""
+    val selectedTuningMode: Int = 0
+
+    val standardTuning:TuningMode = TuningMode("Guitar","standardTuning","E2","A2","D3","G3","B3","E4",82,110,147,196,247,330)
+    val dropDTuning:TuningMode = TuningMode("Guitar","dropDTuning","D2","A2","D3","G3","B3","E4",73,110,147,196,247,330)
+    val dropATuning:TuningMode = TuningMode("Guitar","dropATuning","A1","A2","D3","G3","B3","E4",55,110,147,196,247,330)
+    val openATuning:TuningMode = TuningMode("Guitar","openATuning","E2","A2","C#3","E3","A3","E4",82,110,139,165,220,330)
+    val openBTuning:TuningMode = TuningMode("Guitar","openBTuning","B1","F#2","B2","F#3","B3","D#4",62,93,123,185,247,311)
+    val openFTuning:TuningMode = TuningMode("Guitar","openFTuning","C2","F2","C3","F3","A3","F4",65,87,131,175,220,349)
+
+    val tuningArray = arrayOf(standardTuning,dropDTuning,dropATuning,openATuning,openBTuning,openFTuning)
 
     val SOUND_THRESHOLD = 400
     val SAMPLE = 8000
@@ -20,11 +26,11 @@ class MicSignal {
     val AUDIO_RECORD = AudioRecord(MediaRecorder.AudioSource.MIC,SAMPLE,AudioFormat.CHANNEL_IN_MONO,AudioFormat.ENCODING_PCM_16BIT, MIN_BUFFER)
 
 
-    public fun startTuning(){
+     fun startTuning(){
         AUDIO_RECORD.startRecording()
     }
 
-    public fun isHumming():Boolean{
+     fun isHumming():Boolean{
         val listeningBuffer = ShortArray(32)
         AUDIO_RECORD.read(listeningBuffer, 0, listeningBuffer.size)
         for (buff in listeningBuffer) {
@@ -32,14 +38,14 @@ class MicSignal {
         }
         return false
     }
-    public fun getSignal():ShortArray{
+     fun getSignal():ShortArray{
         val buffer = ShortArray(100)
         val amountOfBuffers = 10
         val signal = ShortArray(buffer.size * amountOfBuffers)
 
         for (i in 0 until amountOfBuffers) {
             AUDIO_RECORD.read(buffer, 0, buffer.size)
-            System.arraycopy(buffer, 0, signal, i * 100, buffer.size) //1000 samples of a signal
+            System.arraycopy(buffer, 0, signal, i * 100, buffer.size)
         }
 
         val fullSignal = ShortArray(SAMPLE)
@@ -49,7 +55,7 @@ class MicSignal {
         return fullSignal
     }
     //This function had been stolen because I'm too stupid to understand univerity math level and I also didn't want to use any external library
-    public fun calculateDFT(signal: ShortArray): Array<Any> {
+     fun calculateDFT(signal: ShortArray): Array<Any> {
         val maxFrequencyMeasured = 400
         val fftArg = Array(maxFrequencyMeasured) {
             DoubleArray(
@@ -83,7 +89,7 @@ class MicSignal {
         }
         return arrayOf(fftResult, highestPeakFrequency)
     }
-    public fun detectFrequencyPeak(fft:DoubleArray):IntArray{
+     fun detectFrequencyPeak(fft:DoubleArray):IntArray{
         val maxFrequency = 400
         val peaks = IntArray(4) //sound peaks
 
@@ -104,7 +110,7 @@ class MicSignal {
         }
         return peaks
     }
-    public fun detectPlayedString(highestPeakFrequency:Int,peaks: IntArray):GuitarStrings{
+     fun detectPlayedString(highestPeakFrequency:Int,peaks: IntArray):GuitarStrings{
         if(peaks[0] >= 147.6 && peaks[0]<= 180.4 && peaks[1] >= 221.4 && peaks[1] <= 270.6){
             return GuitarStrings.E
         }
@@ -126,30 +132,32 @@ class MicSignal {
         return GuitarStrings.none
     }
     //In the future I'll have to upgrade this method or even make another class
-    public fun tuneGuitar(gString:GuitarStrings,highestPeakFrequency: Int,peaks: IntArray):Int{
-
-
+     fun tuneGuitar(gString:GuitarStrings,highestPeakFrequency: Int,peaks: IntArray):Int{
         if(gString==GuitarStrings.E){
-            return 82 - highestPeakFrequency
+            return tuningArray[selectedTuningMode].firstStringFrequency - highestPeakFrequency
         }
         if(gString==GuitarStrings.A){
-            return 110 - peaks[0]
+            return tuningArray[selectedTuningMode].secondStringFrequency - peaks[0]
         }
         if(gString==GuitarStrings.D){
-            return 147 - peaks[0]
+            return tuningArray[selectedTuningMode].thirdStringFrequency - peaks[0]
         }
         if(gString==GuitarStrings.G){
             if(highestPeakFrequency <240)
-                return 197 - highestPeakFrequency;
+                return tuningArray[selectedTuningMode].fourthStringFrequency - highestPeakFrequency;
             else
-                return 197 - highestPeakFrequency/2;
+                return tuningArray[selectedTuningMode].fourthStringFrequency  - highestPeakFrequency/2;
         }
         if(gString==GuitarStrings.B){
-            return 247-highestPeakFrequency
+            return tuningArray[selectedTuningMode].fifthStringFrequency - highestPeakFrequency
         }
         if(gString==GuitarStrings.secondE){
-            return 330-highestPeakFrequency
+            return tuningArray[selectedTuningMode].sixthStringFrequency - highestPeakFrequency
         }
         return 0
+
     }
+
+
+
 }

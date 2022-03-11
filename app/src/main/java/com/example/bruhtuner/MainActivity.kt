@@ -20,25 +20,17 @@ import com.example.bruhtuner.databinding.ActivityMainBinding
 
 const val REQUEST_CODE = 200
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : CanvasDrawer() {
 
     var permissions = arrayOf(Manifest.permission.RECORD_AUDIO)
     var permissionGranted: Boolean = false
     var isTuning: Boolean = false
     var isAutoTuning: Boolean = true
-    var selectedString: Int = 0
-    var width: Float = 0f
+
+
     var gCurrentString: GuitarStrings = GuitarStrings.none
 
 
-    lateinit var bitmap: Bitmap
-    lateinit var pointerBitmap: Bitmap
-    lateinit var whitePaint: Paint
-    lateinit var redPaint: Paint
-    lateinit var cyanPaint: Paint
-
-    lateinit var frequencyCanvasLine: Canvas
-    lateinit var frequencyPointerCanvas: Canvas
     lateinit var signal: MicSignal
     lateinit var handler: Handler
     lateinit var binding: ActivityMainBinding
@@ -65,9 +57,6 @@ class MainActivity : AppCompatActivity() {
         signal = MicSignal()
         handler = Handler()
 
-        //I'll add it later I
-
-        val displayMetrics = DisplayMetrics()
 
         val stringRadioBoxes = arrayOfNulls<RadioButton>(6)
         stringRadioBoxes[0] = findViewById(R.id.radioButtonFirstString)
@@ -77,20 +66,13 @@ class MainActivity : AppCompatActivity() {
         stringRadioBoxes[4] = findViewById(R.id.radioButtonFifthString)
         stringRadioBoxes[5] = findViewById(R.id.radioButtonSixthString)
 
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-
-        width = 1000f
-
-        bitmap = Bitmap.createBitmap(2000, 2000, Bitmap.Config.ARGB_8888)
-        pointerBitmap = Bitmap.createBitmap(2000, 2000, Bitmap.Config.ARGB_8888)
-
         initializeColors()
         initializeFrequencyCanvasLine()
         initializeFrequencyPointerCanvas()
         refreshStringCanvas()
 
         binding.imageView.background = BitmapDrawable(getResources(), bitmap)
-        binding.imageViewFrequencyPointer.background = BitmapDrawable(getResources(),pointerBitmap)
+        binding.imageViewFrequencyPointer.background = BitmapDrawable(getResources(), pointerBitmap)
 
         binding.expandTuningDialogBtn.setOnClickListener {
             val intent = Intent(this, TuningActivity::class.java)
@@ -115,162 +97,11 @@ class MainActivity : AppCompatActivity() {
             stringRadioBoxes[i]?.setOnClickListener(View.OnClickListener {
                 for (j in 0..5) {
                     stringRadioBoxes[j]?.isChecked = false
-
                 }
                 stringRadioBoxes[i]!!.isChecked = true
-                selectedString = i
-                drawSelectedString()
+                gCurrentString = drawSelectedStringManually(i)
             })
         }
-    }
-
-    private fun drawSelectedString(){
-        if(selectedString==0){
-            selectSmallEString()
-            gCurrentString=GuitarStrings.secondE
-        }
-        if(selectedString==1) {
-            selectBString()
-            gCurrentString=GuitarStrings.B
-        }
-        if(selectedString==2){
-            selectGString()
-            gCurrentString=GuitarStrings.G
-        }
-        if(selectedString==3){
-            selectDString()
-            gCurrentString=GuitarStrings.D
-        }
-        if(selectedString==4) {
-            selectAString()
-            gCurrentString=GuitarStrings.A
-        }
-        if(selectedString==5) {
-            selectEString()
-            gCurrentString=GuitarStrings.E
-        }
-    }
-
-    private fun initializeColors() {
-        whitePaint = Paint()
-        whitePaint.setColor(Color.parseColor("#fcfcfc"))
-        whitePaint.setStrokeWidth(25f)
-        whitePaint.setStyle(Paint.Style.STROKE)
-        whitePaint.setAntiAlias(true)
-        whitePaint.setDither(true)
-        whitePaint.setStrokeJoin(Paint.Join.ROUND)
-
-        redPaint = Paint()
-        redPaint.setColor(Color.parseColor("#b00b69"))
-        redPaint.setStrokeWidth(35f)
-        redPaint.setStyle(Paint.Style.STROKE)
-        redPaint.setAntiAlias(true)
-        redPaint.setDither(true)
-        redPaint.setStrokeCap(Paint.Cap.ROUND)
-        redPaint.setStrokeJoin(Paint.Join.ROUND)
-
-        cyanPaint = Paint()
-        cyanPaint.setColor(Color.parseColor("#cd00cd"))
-        cyanPaint.setStrokeWidth(25f)
-        cyanPaint.setStyle(Paint.Style.STROKE)
-        cyanPaint.setAntiAlias(true)
-        cyanPaint.setDither(true)
-        cyanPaint.setStrokeCap(Paint.Cap.ROUND)
-        cyanPaint.setStrokeJoin(Paint.Join.ROUND)
-    }
-
-    private fun initializeFrequencyCanvasLine() {
-        frequencyCanvasLine = Canvas(bitmap)
-        frequencyCanvasLine.drawARGB(255, 41, 45, 44);
-        frequencyCanvasLine.drawLine(width, (width / 2), width, (width / 2) - 600, whitePaint)
-    }
-    private fun initializeFrequencyPointerCanvas(){
-        frequencyPointerCanvas = Canvas(pointerBitmap)
-        frequencyPointerCanvas.drawARGB(0, 41, 45, 44);
-
-    }
-    private fun refreshStringCanvas() {
-        whitePaint.setStrokeWidth(35f)
-        whitePaint.setStrokeCap(Paint.Cap.ROUND)
-
-        //smallE
-        frequencyCanvasLine.drawLine(300f, (width / 2) + 700, 410f, (width / 2) + 825, whitePaint)
-        frequencyCanvasLine.drawLine(410f, (width / 2) + 830, 410f, (width / 2) + 2500, whitePaint)
-
-        //B
-        frequencyCanvasLine.drawLine(300f, (width / 2) + 400, 610f, (width / 2) + 730, whitePaint)
-        frequencyCanvasLine.drawLine(610f, (width / 2) + 730, 610f, (width / 2) + 2500, whitePaint)
-
-        //G
-        frequencyCanvasLine.drawLine(300f, (width / 2) + 100, 810f, (width / 2) + 630, whitePaint)
-        frequencyCanvasLine.drawLine(810f, (width / 2) + 630, 810f, (width / 2) + 2500, whitePaint)
-
-        //D
-        frequencyCanvasLine.drawLine(1700f, (width / 2) + 100, 1190f, (width / 2) + 630, whitePaint)
-        frequencyCanvasLine.drawLine(
-            1190f,
-            (width / 2) + 630,
-            1190f,
-            (width / 2) + 2500,
-            whitePaint
-        )
-
-        //A
-        frequencyCanvasLine.drawLine(1700f, (width / 2) + 400, 1390f, (width / 2) + 730, whitePaint)
-        frequencyCanvasLine.drawLine(
-            1390f,
-            (width / 2) + 730,
-            1390f,
-            (width / 2) + 2500,
-            whitePaint
-        )
-
-        //E
-        frequencyCanvasLine.drawLine(1700f, (width / 2) + 700, 1590f, (width / 2) + 825, whitePaint)
-        frequencyCanvasLine.drawLine(
-            1590f,
-            (width / 2) + 830,
-            1590f,
-            (width / 2) + 2500,
-            whitePaint
-        )
-
-    }
-
-    private fun selectSmallEString() {
-        refreshStringCanvas()
-        frequencyCanvasLine.drawLine(300f, (width / 2) + 100, 810f, (width / 2) + 630, redPaint)
-        frequencyCanvasLine.drawLine(810f, (width / 2) + 630, 810f, (width / 2) + 2500, redPaint)
-    }
-
-    private fun selectBString() {
-        refreshStringCanvas()
-        frequencyCanvasLine.drawLine(300f, (width / 2) + 400, 610f, (width / 2) + 730, redPaint)
-        frequencyCanvasLine.drawLine(610f, (width / 2) + 730, 610f, (width / 2) + 2500, redPaint)
-    }
-
-    private fun selectGString() {
-        refreshStringCanvas()
-        frequencyCanvasLine.drawLine(300f, (width / 2) + 700, 410f, (width / 2) + 825, redPaint)
-        frequencyCanvasLine.drawLine(410f, (width / 2) + 830, 410f, (width / 2) + 2500, redPaint)
-    }
-
-    private fun selectDString() {
-        refreshStringCanvas()
-        frequencyCanvasLine.drawLine(1700f, (width / 2) + 100, 1190f, (width / 2) + 630, redPaint)
-        frequencyCanvasLine.drawLine(1190f, (width / 2) + 630, 1190f, (width / 2) + 2500, redPaint)
-    }
-
-    private fun selectAString() {
-        refreshStringCanvas()
-        frequencyCanvasLine.drawLine(1700f, (width / 2) + 400, 1390f, (width / 2) + 730, redPaint)
-        frequencyCanvasLine.drawLine(1390f, (width / 2) + 730, 1390f, (width / 2) + 2500, redPaint)
-    }
-
-    private fun selectEString() {
-        refreshStringCanvas()
-        frequencyCanvasLine.drawLine(1700f, (width / 2) + 700, 1590f, (width / 2) + 825, redPaint)
-        frequencyCanvasLine.drawLine(1590f, (width / 2) + 830, 1590f, (width / 2) + 2500, redPaint)
     }
 
     override fun onRequestPermissionsResult(
@@ -282,80 +113,84 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CODE)
             permissionGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED
     }
-    private fun startRecording(){
-        isTuning=true
+
+    private fun startRecording() {
+        isTuning = true
         signal.startTuning()
         tune();
     }
 
     override fun onEnterAnimationComplete() {
         super.onEnterAnimationComplete()
-        binding.frequencyTextView.text="bruh"
-          startRecording()
+        binding.frequencyTextView.text = "bruh"
+        startRecording()
     }
-    private fun drawStringSelection(cString:String){
-        if(cString=="secondE")
-            selectSmallEString()
-        if(cString=="B")
-            selectBString()
-        if(cString=="G")
-            selectGString()
-        if(cString=="D")
-            selectDString()
-        if(cString=="A")
-            selectAString()
-        if(cString=="E")
-            selectEString()
-        if(cString=="none")
-            refreshStringCanvas()
-    }
-    private fun tune(){
+
+    private fun tune() {
         handler.post(object : Runnable {
             override fun run() {
                 var calculated = false
                 while (!calculated) {
                     if (signal.isHumming()) { //signal is loud enough
                         calculated = true
-                        val sig: ShortArray = signal.getSignal() //get samples of a signal to transform
+                        val sig: ShortArray =
+                            signal.getSignal() //get samples of a signal to transform
                         val fourierData = signal.calculateDFT(sig)
                         val fourier = fourierData[0] as DoubleArray //transformed signal
                         val maxFreq = fourierData[1] as Int
                         val peaks: IntArray = signal.detectFrequencyPeak(fourier)
                         var string: GuitarStrings = gCurrentString
 
-                        if(isAutoTuning==true){
-                           string = signal.detectPlayedString(maxFreq, peaks)
+                        if (isAutoTuning == true) {
+                            string = signal.detectPlayedString(maxFreq, peaks)
                         }
 
                         val detuning: Int = signal.tuneGuitar(
                             string,
                             maxFreq,
                             peaks
-                        ) //the difference between ideal and calculated value (in Hz)
+                        )
 
-                        binding.frequencyTextView.text=detuning.toString()+ string.toString()
-                        drawStringSelection(string.toString())
+                        //the difference between ideal and calculated value (in Hz)
+                        binding.frequencyTextView.text = detuning.toString() + string.toString()
+                        drawStringSelectionAuto(string.toString())
 
-                        frequencyPointerCanvas.drawColor(Color.TRANSPARENT,PorterDuff.Mode.CLEAR)
-                        frequencyPointerCanvas.drawPoint(1000f+detuning,1000f,cyanPaint)
+                        frequencyPointerCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+                        frequencyPointerCanvas.drawPoint(500f + detuning, 300f, cyanPaint)
 
                         showTip(detuning)
 
-                        if(detuning==0 && string!=GuitarStrings.none)
-                            binding.frequencyTextView.setBackgroundColor(Color.argb(33,127,255,0))
+                        if (detuning == 0 && string != GuitarStrings.none)
+                            binding.frequencyTextView.setBackgroundColor(
+                                Color.argb(
+                                    33,
+                                    127,
+                                    255,
+                                    0
+                                )
+                            )
                         else
-                            binding.frequencyTextView.setBackgroundColor(Color.argb(33,220,20,60))
+                            binding.frequencyTextView.setBackgroundColor(
+                                Color.argb(
+                                    33,
+                                    220,
+                                    20,
+                                    60
+                                )
+                            )
                     }
                 }
                 if (isTuning) handler.postDelayed(this, 50) else handler.removeCallbacks(this)
             }
         })
     }
-    fun showTip(detuning:Int){
-        if(detuning>0)
-            binding.textViewTuningHelper.text="Too High"
-        if(detuning<0)
-            binding.textViewTuningHelper.text="Too Low"
 
+    fun showTip(detuning: Int) {
+        if (detuning < 0)
+            binding.textViewTuningHelper.text = "Too High"
+        if (detuning > 0)
+            binding.textViewTuningHelper.text = "Too Low"
+        if (detuning == 0)
+            binding.textViewTuningHelper.text = "Perfect"
     }
 }
